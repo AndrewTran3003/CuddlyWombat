@@ -1,0 +1,363 @@
+﻿@model CuddlyWombat.ViewModel.PaymentViewModel
+
+@{
+    ViewData["Title"] = "Payment";
+    int paymentNumber = 1;
+}
+
+<h1>Payment</h1>
+
+<hr />
+<div class="row">
+
+    <div class="col-5">
+        <h2>Orders</h2>
+        <table class="col-12">
+            <thead>
+                <tr class="row col-12 table-active">
+                    <th scope="col" class="col-1">
+                        No
+                    </th>
+                    <th scope="col" class="col-4">
+                        Order's Name
+                    </th>
+                    <th scope="col" class="col-3">
+                        Order For
+                    </th>
+                    <th scope="col" class="col-2">
+                        Total
+                    </th>
+
+                    <th class="col-2">
+
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (Order order in Model.Orders)
+                    {
+                        if (order.OrderType == "Takeaway")
+                        {
+                            <tr class="row col-12 table-warning ">
+                                <td class="col-1">
+                                    @paymentNumber
+                                </td>
+                                <td class="col-4">
+                                    @Html.DisplayFor(i => order.Name)
+                                </td>
+                                <td class="col-3">
+                                    @Html.DisplayFor(i => order.CustomerName)
+                                </td>
+                                <td class="col-2">
+                                    @Html.DisplayFor(i => order.AmountDue)
+                                </td>
+
+                                <th class="col-2">
+                                    <button type="button" class="btn btn-info" onclick="GetOrderDetail('@order.ID.ToString()')">Info</button>
+                                </th>
+
+                            </tr>
+
+                        }
+                        else
+                        {
+                            <tr class="row col-12">
+                                <td class="col-1">
+                                    @paymentNumber
+                                </td>
+                                <td class="col-4">
+                                    @Html.DisplayFor(i => order.Name)
+                                </td>
+                                <td class="col-3">
+                                    @Html.DisplayFor(i => order.CustomerName)
+                                </td>
+                                <td class="col-2">
+                                    @Html.DisplayFor(i => order.AmountDue)
+                                </td>
+
+                                <th class="col-2">
+                                    <button type="button" class="btn btn-info" onclick="GetOrderDetail('@order.ID.ToString()')">Info</button>
+                                </th>
+                            </tr>
+
+                        }
+
+
+
+                        paymentNumber++;
+                    }
+
+
+                }
+
+
+            </tbody>
+        </table>
+    </div>
+    <div class="col-7">
+        <h2>Details</h2>
+        @if (Model.ActiveOrder != null)
+        {
+            <table class="col-12">
+                <thead>
+                    <tr class="row col-12 table-primary">
+                        <th class="col-3" scope="col">
+                            Order's Name
+                        </th>
+                        <th class="col-3" scope="col">
+                            Description
+                        </th>
+                        <th class="col-4" scope="col">
+                            Has
+                        </th>
+                        <th class="col-1" scope="col">
+                            Qty
+                        </th>
+                        <th class="col-1" scope="col">
+                            Price
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="row col-12 ">
+                        <td class="col-3" scope="col">
+                            @Html.DisplayFor(i => i.ActiveOrder.Order.Name)
+                        </td>
+                        <td class="col-3" scope="col">
+
+                            @Html.DisplayFor(i => i.ActiveOrder.Order.Description)
+                        </td>
+                        <td class="col-4" scope="col">
+                            @foreach (Item item in Model.ActiveOrder.Items)
+                            {
+                                var orderItems = item.OrderItems;
+                                foreach (OrderJItem oi in orderItems.Where(i => i.OrderID == Model.ActiveOrder.Order.ID))
+                                {
+                                    if (oi.ItemsSold > 0)
+                                    {
+                                        @Html.DisplayFor(i => oi.Item.Name)
+                                        <br />
+                                    }
+
+                                }
+
+                            }
+                            @foreach (Menu menu in Model.ActiveOrder.Menus)
+                            {
+                                var orderMenus = menu.OrderMenus;
+                                foreach (OrderJMenu om in orderMenus.Where(i => i.OrderID == Model.ActiveOrder.Order.ID))
+                                {
+                                    if (om.MenusSold > 0)
+                                    {
+                                        @Html.DisplayFor(i => om.Menu.Name)
+                                        <br />
+                                    }
+
+                                }
+
+                            }
+                        </td>
+
+
+                        <td class="col-1" scope="col">
+                            @foreach (Item item in Model.ActiveOrder.Items)
+                            {
+                                var orderItems = item.OrderItems;
+                                foreach (OrderJItem oi in orderItems.Where(i => i.OrderID == Model.ActiveOrder.Order.ID))
+                                {
+                                    if (oi.ItemsSold > 0)
+                                    {
+                                        @Html.DisplayFor(i => oi.ItemsSold)
+                                        <br />
+                                    }
+
+                                }
+
+                            }
+                            @foreach (Menu menu in Model.ActiveOrder.Menus)
+                            {
+                                var orderMenus = menu.OrderMenus;
+                                foreach (OrderJMenu om in orderMenus.Where(i => i.OrderID == Model.ActiveOrder.Order.ID))
+                                {
+                                    if (om.MenusSold > 0)
+                                    {
+                                        @Html.DisplayFor(i => om.MenusSold)
+                                        <br />
+                                    }
+
+                                }
+
+                            }
+                        </td>
+                        <td class="col-1" scope="col">
+                            @foreach (Item item in Model.ActiveOrder.Items)
+                            {
+                                var orderItems = item.OrderItems;
+                                foreach (OrderJItem oi in orderItems.Where(i => i.OrderID == Model.ActiveOrder.Order.ID))
+                                {
+                                    if (oi.ItemsSold > 0)
+                                    {
+                                        var totalByItem = oi.ItemsSold * oi.Item.Price;
+                                        @Html.DisplayFor(i => totalByItem)
+                                        <br />
+                                    }
+
+                                }
+
+                            }
+                            @foreach (Menu menu in Model.ActiveOrder.Menus)
+                            {
+                                var orderMenus = menu.OrderMenus;
+                                foreach (OrderJMenu om in orderMenus.Where(i => i.OrderID == Model.ActiveOrder.Order.ID))
+                                {
+                                    if (om.MenusSold > 0)
+                                    {
+                                        var totalByMenu = om.MenusSold * om.Menu.Price;
+                                        @Html.DisplayFor(i => totalByMenu);
+                                        <br />
+                                    }
+
+                                }
+
+                            }
+                        </td>
+
+                    </tr>
+                    <tr class="row col-12 ">
+                        <td class="col-11">
+                            Total Amount
+                        </td>
+                        <td class="col-1">
+                            @Html.DisplayFor(i => Model.ActiveOrder.Order.AmountDue)
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <div class="row col-12 ">
+
+                <button class="btn btn-danger col-3" data-toggle="modal" data-target="#deleteModal">
+                    Delete Order
+                </button>
+
+                <div class="col-1">
+
+                </div>
+                <button class="btn btn-warning col-3" onclick="HandleAction('@Model.ActiveOrder.Order.ID', 'Edit')">
+                    Edit
+                </button>
+                <div class="col-1">
+
+                </div>
+
+                <button class="btn btn-success col-3" onclick="HandleAction('@Model.ActiveOrder.Order.ID', 'Pay')">
+                    Pay
+                </button>
+
+
+
+
+
+            </div>
+            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Delete This Order</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete this order?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" onclick="HandleAction('@Model.ActiveOrder.Order.ID', 'Delete')">Delete</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="paymenSuccessModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Payment Successful!</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Would you like to print a receipt?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success">Yes</button>
+                            <button type="button" class="btn btn-secondary" onclick="HandleSuccessfulPayment('Close')">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        }
+        else
+        {
+            string Text = "Click on the 'Info' buttons to process orders";
+            @Html.DisplayFor(i => Text)
+
+
+        }
+
+
+    </div>
+</div>
+<script>
+    function GetOrderDetail(orderID) {
+        var url = '@Url.Action("Index","Payments")';
+        url = url + "?orderID=" + orderID;
+        window.location.replace(url);
+
+    }
+
+    function HandleAction(orderID, action) {
+        var url = '@Url.Action("HandleAction", "Payments")';
+        var data =
+        {
+            OrderID: orderID,
+            Action: action
+        };
+
+        $.post(url, data, function (response) {
+            var nextUrl = "";
+            if (response == "Edit") {
+                nextUrl = '@Url.Action("Create", "Orders")';
+                nextUrl = nextUrl + "?orderID=" + orderID;
+                window.location.replace(nextUrl);
+            }
+            else if (response == "Deleted") {
+                nextUrl = '@Url.Action("Index","Payments")';
+                window.location.replace(nextUrl);
+            }
+            else if (response == "Paid") {
+                $("#paymenSuccessModal").modal();
+
+            }
+        });
+
+    }
+    function HandleSuccessfulPayment(action) {
+        if (action == "Close") {
+            var url = '@Url.Action("Index", "Payments")';
+            window.location.replace(url);
+
+        }
+
+    }
+
+
+</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

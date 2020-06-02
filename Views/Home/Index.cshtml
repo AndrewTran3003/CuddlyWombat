@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+@if (@User.Identity.IsAuthenticated)
+{
+
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    </div>
+
+    <h1>Helllo @User.Identity.Name</h1>
+    if (@User.IsInRole("Admin"))
+    {
+        <h1>This Man is an Admin</h1>
+    }
+    if (@User.IsInRole("FOH"))
+    {
+        <h1>This Man is the Front of House guy</h1>
+    }
+    if (@User.IsInRole("BOH"))
+    {
+        <h1>This Man is the Back of House guy</h1>
+    }
+    if (@User.IsInRole("AR"))
+    {
+        <h1>This Man is the All Rounder guy</h1>
+    }
+    if (@User.IsInRole("Acc"))
+    {
+        <h1>This Man is an Accountant</h1>
+    }
+
+}

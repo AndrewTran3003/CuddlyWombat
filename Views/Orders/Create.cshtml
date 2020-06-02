@@ -1,0 +1,379 @@
+﻿@model CuddlyWombat.ViewModel.OrderViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    int itemCounter = 0;
+    int menuCounter = 0;
+    double TotalPrice = 0;
+}
+<style>
+    .option-button {
+        height: 100%;
+    }
+
+    .media-object {
+        margin-top: 10px;
+        margin-bottom: 10px
+    }
+
+    .mainMenu {
+        margin: auto;
+    }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<div class="row mainMenu">
+
+    <div class="col">
+        <h2>Order detail</h2>
+        <table class="container">
+            <tr class="row">
+                <td class="col-3">
+                    <p>
+                        @Html.LabelFor(x => x.Order.Name)
+                    </p>
+                </td>
+
+                <td class="col-8">
+                    <p>
+                        @Html.TextBoxFor(x => x.Order.Name)
+                    </p>
+                </td>
+            </tr>
+            <tr class="row">
+                <td class="col-3">
+                    <p>
+                        @Html.LabelFor(x => x.Order.Description)
+                    </p>
+                </td>
+
+                <td class="col-8">
+                    <p>
+                        @Html.TextBoxFor(x => x.Order.Description)
+                    </p>
+                </td>
+
+            </tr>
+            <tr class="row">
+                <td class="col-3">
+                    <p>
+                        @Html.LabelFor(x => x.Order.CustomerName)
+                    </p>
+                </td>
+
+                <td class="col-8">
+                    <p>
+                        @Html.TextBoxFor(x => x.Order.CustomerName)
+                    </p>
+                </td>
+
+            </tr>
+
+        </table>
+
+        <table class="container">
+            <thead>
+                <tr class="row col-12 table-active">
+                    <th class="col-4">
+                        <p>Item</p>
+                    </th>
+                    <th class="col-1">
+                        <p>Qty</p>
+                    </th>
+                    <th class="col-3">
+                        <p>Price per unit</p>
+                    </th>
+                    <th class="col-2">
+                        <p>Price</p>
+                    </th>
+
+                    <th class="col-1">
+
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    if (Nullable.Equals(Model.Order.OrderItems, null) == false ||
+                        Model.Order.OrderItems.Count > 0)
+                    {
+                        foreach (var item in Model.Order.OrderItems)
+                        {
+                            if (item.ItemsSold > 0)
+                            {
+                                <tr class="table-primary row col-12">
+                                    <th scope="row" class="col-4">
+                                        @Html.DisplayFor(modelItem => item.Item.Name)
+                                    </th>
+
+                                    <td class="col-1">
+                                        @Html.DisplayFor(modelItem => item.ItemsSold)
+                                    </td>
+                                    <td class="col-3">
+                                        @Html.DisplayFor(modelItem => item.Item.Price)
+                                    </td>
+                                    <td class="col-2">
+                                        @{
+                                            double totalItemPrice = item.ItemsSold * item.Item.Price;
+                                            TotalPrice += totalItemPrice;
+                                        }
+                                        @totalItemPrice
+                                    </td>
+
+                                    <td class="col-1">
+                                        <button type="button" class="btn btn-danger" onclick="AddOneBackToAvailableList('@item.ItemID', '@item.OrderID','Item')">Remove</button>
+                                    </td>
+                                </tr>
+
+                            }
+
+                        }
+                    }
+
+
+                }
+
+                @{
+                    if (Nullable.Equals(Model.Order.OrderMenus, null) == false ||
+                        Model.Order.OrderMenus.Count > 0)
+                    {
+                        foreach (var menu in Model.Order.OrderMenus)
+                        {
+                            if (menu.MenusSold > 0)
+                            {
+                                <tr class="table-success row col-12">
+                                    <th scope="row" class="col-4">
+                                        @Html.DisplayFor(modelItem => menu.Menu.Name)
+                                    </th>
+                                    <td class="col-1">
+                                        @Html.DisplayFor(modelItem => menu.MenusSold)
+                                    </td>
+                                    <td class="col-3">
+                                        @Html.DisplayFor(modelItem => menu.Menu.Price)
+                                    </td>
+                                    <td class="col-2">
+                                        @{
+                                            double totalMenuPrice = menu.MenusSold * menu.Menu.Price;
+                                            TotalPrice += totalMenuPrice;
+                                        }
+                                        @totalMenuPrice
+                                    </td>
+                                    <td class="col-1">
+                                        <button type="button" class="btn btn-danger" onclick="AddOneBackToAvailableList('@menu.MenuID', '@menu.OrderID','Menu')">Remove</button>
+                                    </td>
+                                </tr>
+                            }
+
+                        }
+                    }
+
+
+                }
+                @{
+                    int checkIfExist = 0;
+                    foreach (OrderJMenu om in Model.Order.OrderMenus)
+                    {
+                        if (om.MenusSold > 0)
+                        {
+                            checkIfExist++;
+                        }
+
+                    }
+                    foreach (OrderJItem oi in Model.Order.OrderItems)
+                    {
+                        if (oi.ItemsSold > 0)
+                        {
+                            checkIfExist++;
+                        }
+                    }
+                    if (checkIfExist > 0)
+                    {
+                        <tr class="row">
+                            <td class="col-7">
+                                Total Price
+                            </td>
+                            <th class="col-5" scope="row">
+                                @TotalPrice
+                            </th>
+                        </tr>
+                        <tr class="row">
+                            <td class="col">
+                                <button type="button" class="btn btn-warning" onclick="CompleteOrder('Pending','Takeaway')">Pay Later</button>
+                            </td>
+                            <td class="col">
+                                <button type="button" class="btn btn-info" onclick="CompleteOrder('Pending','Dinein')">Pay Now</button>
+                            </td>
+                        </tr>
+
+                    }
+                }
+
+
+
+
+
+            </tbody>
+        </table>
+
+
+
+    </div>
+
+    <div class="col">
+        <div>
+            <h2>Available Items</h2>
+            <div>
+                <div>
+                    <div class="row media-object">
+                        @foreach (var item in Model.Items)
+                        {
+                            if (itemCounter != 0 && itemCounter % 4 == 0)
+                            {
+                            @:</div>
+                            @:<div class="row media-object">
+                            }
+                            <div class="col-md-3 button-clicked" onclick="SubtractOneFromAvailableList('@item.ID', '@Model.Order.ID','Item') ">
+                                <button type="button" class="btn btn-primary btn-block option-button">
+                                    @Html.DisplayFor(modelItem => item.Name):
+                                    @Html.DisplayFor(modelItem => item.Price)$
+                                </button>
+                            </div>
+                            itemCounter++;
+                        }
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <div>
+            <h2>Available Menus</h2>
+            <div>
+                <div>
+                    <div class="row media-object">
+                        @foreach (var menu in Model.Menus)
+                        {
+                            if (menuCounter != 0 && menuCounter % 4 == 0)
+                            {
+                            @:</div>
+                            @:<div class="row media-object">
+                            }
+                            <div class="col-md-3 button-clicked">
+                                <button type="button" class="btn btn-success btn-block option-button" onclick="SubtractOneFromAvailableList('@menu.ID', '@Model.Order.ID','Menu')">
+                                    @Html.DisplayFor(modelItem => menu.Name):
+                                    @Html.DisplayFor(modelItem => menu.Price)$
+                                </button>
+                            </div>
+                            menuCounter++;
+                        }
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    function SubtractOneFromAvailableList(id,orderID,type )
+    {
+        var url = "@Url.Action("SubtractOneFromAvailableList", "Orders")";
+        var customerName = $("#Order_CustomerName").val();
+        var description = $("#Order_Description").val();
+        var name = $("#Order_Name").val();
+        var data =
+        {
+            OrderID: orderID,
+            ID: id,
+            Type: type,
+            CustomerName: customerName,
+            Description: description,
+            Name : name
+
+        };
+        console.log(orderID);
+        $.post(url, data, function (response) {
+
+            var orderID = response.order.id;
+            var url = "/Orders/Create?orderID=" + orderID;
+            window.location.replace(url);
+        });
+    }
+    function AddOneBackToAvailableList(id,orderID,type )
+    {
+        var url = "@Url.Action("AddOneBackToAvailableList", "Orders")";
+        var customerName = $("#Order_CustomerName").val();
+        var description = $("#Order_Description").val();
+        var name = $("#Order_Name").val();
+        var data =
+        {
+            OrderID: orderID,
+            ID: id,
+            Type: type,
+            CustomerName: customerName,
+            Description: description,
+            Name : name
+        };
+        console.log(orderID);
+        $.post(url, data, function (response) {
+
+            var orderID = response.order.id;
+            var url = "/Orders/Create?orderID=" + orderID;
+            window.location.replace(url);
+        });
+    }
+    function CompleteOrder(status,orderType) {
+        var url = "@Url.Action("CompleteOrder", "Orders")";
+        var customerName = $("#Order_CustomerName").val();
+        var description = $("#Order_Description").val();
+        var name = $("#Order_Name").val();
+        var data =
+        {
+            OrderID: '@Model.Order.ID.ToString()',
+            Status: status,
+            Name: name,
+            CustomerName: customerName,
+            OrderType: orderType,
+            Description: description
+        };
+        $.post(url, data, function (response) {
+            if (response == "TakeNewOrder") {
+                var url = "/Orders/Create";
+                window.location.replace(url);
+            }
+            else if (response == "GoToPayment") {
+                var url = "@Url.Action("Index", "Payments")";
+                url = url + "?orderId=" + "@Model.Order.ID";
+                window.location.replace(url);
+
+            }
+            else {
+                alert("Internal Server Problem. Try again later");
+            }
+
+        });
+    }
+
+    window.onbeforeunload = function ()
+    {
+        var orderStatus = @Model.Order.Status;
+        var amount = @Model.Order.AmountDue;
+
+        if (orderStatus == "Incomplete" && amount > 0) {
+            alert("Please complete the order or remove all the items ");
+        }
+
+    }
+
+
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+

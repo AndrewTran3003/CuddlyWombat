@@ -1,0 +1,46 @@
+﻿@addTagHelper "*, Microsoft.AspNetCore.Mvc.TagHelpers"
+@model CuddlyWombat.Models.SystemUserLogin
+
+<h1>Welcome to Cuddly Wombat</h1>
+<fieldset>
+    @using (Html.BeginForm())
+    {
+        <table>
+            <tr>
+                <td>
+                    <p>
+                        @Html.LabelFor(x => x.UserName)
+                    </p>
+                </td>
+
+                <td>
+                    <p>
+                        @Html.TextBoxFor(x => x.UserName)
+                    </p>
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    <p>
+                        @Html.LabelFor(x => x.Password)
+                    </p>
+                </td>
+
+                <td>
+                    <p>
+                        @Html.PasswordFor(x => x.Password)
+                    </p>
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    <button type="submit">Login </button>
+                </td>
+
+            </tr>
+        </table>
+    }
+
+</fieldset>

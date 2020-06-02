@@ -1,0 +1,107 @@
+﻿@addTagHelper "*, Microsoft.AspNetCore.Mvc.TagHelpers"
+@model CuddlyWombat.Models.SystemUserRegistration
+
+@{
+    Layout = "_Layout";
+}
+@{
+
+    IEnumerable<SystemUserRole> systemUserRoles = new List<SystemUserRole>
+{
+        new SystemUserRole
+        {
+            RoleValue = "Admin",
+            DisplayName = "Administrator"
+        },
+        new SystemUserRole
+        {
+            RoleValue = "FOH",
+            DisplayName = "Front of house"
+        },
+        new SystemUserRole
+        {
+            RoleValue = "BOH",
+            DisplayName = "Back of house"
+        },
+        new SystemUserRole
+        {
+            RoleValue = "AR",
+            DisplayName = "All Rounder"
+        },
+        new SystemUserRole
+        {
+            RoleValue = "Acc",
+            DisplayName = "Accountant"
+        },
+    };
+}
+
+<fieldset>
+    @using (Html.BeginForm())
+    {
+        <table>
+            <tr>
+                <td>
+                    <p>
+                        @Html.LabelFor(x => x.UserName)
+                    </p>
+                </td>
+
+                <td>
+                    <p>
+                        @Html.TextBoxFor(x => x.UserName)
+                    </p>
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    <p>
+                        @Html.LabelFor(x => x.Password)
+                    </p>
+                </td>
+
+                <td>
+                    <p>
+                        @Html.PasswordFor(x => x.Password)
+                    </p>
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    <p>
+                        @Html.LabelFor(x => x.ConfirmPassWord)
+                    </p>
+                </td>
+
+                <td>
+                    <p>
+                        @Html.PasswordFor(x => x.ConfirmPassWord)
+                    </p>
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    <p>
+                        @Html.LabelFor(x => x.UserRole)
+                    </p>
+                </td>
+
+                <td>
+                    <p>
+                        @Html.DropDownListFor(x => x.UserRole, new SelectList(systemUserRoles, "RoleValue", "DisplayName"))
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="submit">Create </button>
+                </td>
+            </tr>
+        </table>
+
+    }
+
+</fieldset>
