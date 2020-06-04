@@ -187,3 +187,4 @@ C:\Side Projects\CuddlyWombat\CuddlyWombat\bin\Debug\netcoreapp3.1\Newtonsoft.Js
 C:\Side Projects\CuddlyWombat\CuddlyWombat\obj\Debug\netcoreapp3.1\CuddlyWombat.csproj.CoreCompileInputs.cache
 C:\Side Projects\CuddlyWombat\CuddlyWombat\obj\Debug\netcoreapp3.1\CuddlyWombat.MvcApplicationPartsAssemblyInfo.cache
 C:\Side Projects\CuddlyWombat\CuddlyWombat\obj\Debug\netcoreapp3.1\Razor\Views\Payments\Index.cshtml.g.cs
+C:\Side Projects\CuddlyWombat\CuddlyWombat\obj\Debug\netcoreapp3.1\Razor\Views\Receipts\Index.cshtml.g.cs

@@ -95,7 +95,8 @@ namespace CuddlyWombat.Controllers
                     DateCreated = DateTime.UtcNow,
                     Method = "Card",
                     EmployeeName = paymentViewModel.ActiveOrder.Order.Employee,
-                    CustomerName = paymentViewModel.ActiveOrder.Order.CustomerName
+                    CustomerName = paymentViewModel.ActiveOrder.Order.CustomerName,
+                    Amount = paymentViewModel.ActiveOrder.Order.AmountDue
                 };
                 PaymentJOrder paymentOrder = new PaymentJOrder
                 {

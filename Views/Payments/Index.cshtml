@@ -294,8 +294,8 @@
                             <p>Would you like to print a receipt?</p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success">Yes</button>
-                            <button type="button" class="btn btn-secondary" onclick="HandleSuccessfulPayment('Close')">Close</button>
+                            <button type="button" class="btn btn-success" onclick="HandleSuccessfulPayment('Print Receipt', '@Model.ActiveOrder.Order.ID')">Yes</button>
+                            <button type="button" class="btn btn-secondary" onclick="HandleSuccessfulPayment('Close', '')">Close</button>
                         </div>
                     </div>
                 </div>
@@ -347,12 +347,19 @@
         });
 
     }
-    function HandleSuccessfulPayment(action) {
+    function HandleSuccessfulPayment(action,orderID) {
         if (action == "Close") {
             var url = '@Url.Action("Index", "Payments")';
             window.location.replace(url);
 
         }
+        else if (action == "Print Receipt") {
+            var url = '@Url.Action("Index", "Receipts")';
+            url = url + "?orderID=" + orderID; 
+            window.location.replace(url);
+
+        }
+
 
     }
 

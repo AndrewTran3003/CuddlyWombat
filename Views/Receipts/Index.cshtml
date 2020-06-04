@@ -1,0 +1,403 @@
+﻿@model CuddlyWombat.ViewModel.ReceiptViewModel
+
+@{
+    ViewData["Title"] = "Receipt";
+    int receiptNumber = 1;
+    List<string[]> orderDetails = new List<string[]>();
+}
+
+<style>
+    #receipt {
+        border: 1px solid #ccc !important;
+        border-radius: 5px;
+        padding: 30px;
+        margin: 30px;
+    }
+</style>
+
+<h1>Payment</h1>
+
+<hr />
+<div class="row">
+
+    <div class="col-5">
+        <h2>Orders</h2>
+        <table class="col-12 table table-hover">
+            <thead>
+                <tr class="row col-12 table-dark">
+                    <th scope="col" class="col-1">
+                        No
+                    </th>
+                    <th scope="col" class="col-4">
+                        Receipt Name
+                    </th>
+                    <th scope="col" class="col-3">
+                        Receipt For
+                    </th>
+                    <th scope="col" class="col-2">
+                        Total
+                    </th>
+
+                    <th class="col-2">
+                        Info
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (Receipt receipt in Model.Receipts)
+                    {
+                        if (receipt.PaymentReceipt.Payment.PaymentOrder.OrderID.ToString() == Model.ActiveOrderID)
+                        {
+                            <tr class="row col-12 table-active">
+                                <td class="col-1">
+                                    @receiptNumber
+                                </td>
+                                <td class="col-4">
+                                    @Html.DisplayFor(i => receipt.Name)
+                                </td>
+                                <td class="col-3">
+                                    @Html.DisplayFor(i => receipt.CustomerName)
+                                </td>
+                                <td class="col-2">
+                                    @Html.DisplayFor(i => receipt.Total)
+                                </td>
+
+                                <th class="col-2">
+                                    <button type="button" class="btn btn-info" onclick="GetReceiptDetail('@receipt.PaymentReceipt.Payment.PaymentOrder.OrderID')">Info</button>
+                                </th>
+                            </tr>
+
+
+                        }
+                        else
+                        {
+                            <tr class="row col-12">
+                                <td class="col-1">
+                                    @receiptNumber
+                                </td>
+                                <td class="col-4">
+                                    @Html.DisplayFor(i => receipt.Name)
+                                </td>
+                                <td class="col-3">
+                                    @Html.DisplayFor(i => receipt.CustomerName)
+                                </td>
+                                <td class="col-2">
+                                    @Html.DisplayFor(i => receipt.Total)
+                                </td>
+
+                                <th class="col-2">
+                                    <button type="button" class="btn btn-info" onclick="GetReceiptDetail('@receipt.PaymentReceipt.Payment.PaymentOrder.OrderID')">Info</button>
+                                </th>
+                            </tr>
+
+                        }
+
+
+                        receiptNumber++;
+                    }
+
+
+                }
+
+
+            </tbody>
+        </table>
+    </div>
+    <div class="col-7">
+        <h2>Details</h2>
+
+
+        @if (Model.CurrentReceipt != null)
+        {
+            <div id="receipt">
+
+                @{
+
+                    var orderDetailBlock = Model.CurrentReceipt.OrderDetail.Split(",");
+                    foreach (string i in orderDetailBlock)
+                    {
+                        if (i != "")
+                        {
+                            var orderDetail = i.Split(":");
+                            orderDetails.Add(orderDetail);
+                        }
+
+                    }
+
+                }
+
+                <div class="col-10">
+                    <h3>Cuddly Wombat</h3>
+                    <p>
+                        <b>@Html.LabelFor(i => Model.CurrentReceipt.Name)</b>:
+                        @Html.DisplayFor(i => Model.CurrentReceipt.Name)
+                    </p>
+                    <p>
+                        <b>@Html.LabelFor(i => Model.CurrentReceipt.Description)</b>:
+                        @Html.DisplayFor(i => Model.CurrentReceipt.Description)
+                    </p>
+                    <p>
+                        <b>@Html.LabelFor(i => Model.CurrentReceipt.MerchantID)</b>:
+                        @Html.DisplayFor(i => Model.CurrentReceipt.MerchantID)
+                    </p>
+                    <p>
+                        <b>@Html.LabelFor(i => Model.CurrentReceipt.DateCreated)</b>:
+                        @Html.DisplayFor(i => Model.CurrentReceipt.DateCreated)
+                    </p>
+                    <p>
+                        <b>@Html.LabelFor(i => Model.CurrentReceipt.CardNumber)</b>:
+                        @Html.DisplayFor(i => Model.CurrentReceipt.CardNumber)
+                    </p>
+                    <p>
+                        <b>@Html.LabelFor(i => Model.CurrentReceipt.EmployeeName)</b>:
+                        @Html.DisplayFor(i => Model.CurrentReceipt.EmployeeName)
+                    </p>
+                    <p>
+                        <b>@Html.LabelFor(i => Model.CurrentReceipt.CustomerName)</b>:
+                        @Html.DisplayFor(i => Model.CurrentReceipt.CustomerName)
+                    </p>
+                    <p>
+                        <b>@Html.LabelFor(i => Model.CurrentReceipt.Total)</b>:
+                        @Html.DisplayFor(i => Model.CurrentReceipt.Total)
+                    </p>
+                </div>
+
+
+                <table class="col-10">
+                    <thead>
+                        <tr class="row col-12 table-primary">
+                            <th class="col-4" scope="col">
+                                Item Name
+                            </th>
+                            <th class="col-4" scope="col">
+                                Description
+                            </th>
+                            <th class="col-4" scope="col">
+                                Total
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="row col-12 ">
+                            <td class="col-4" scope="col">
+                                @foreach (string[] s in orderDetails)
+                                {
+                                    @Html.DisplayFor(i => s[0])
+                                    <br />
+
+                                }
+                            </td>
+                            <td class="col-4" scope="col">
+                                @foreach (string[] s in orderDetails)
+                                {
+                                    @Html.DisplayFor(i => s[1])
+                                    <br />
+
+                                }
+                            </td>
+                            <td class="col-4" scope="col">
+                                @foreach (string[] s in orderDetails)
+                                {
+                                    @Html.DisplayFor(i => s[2])
+                                    <br />
+
+                                }
+                            </td>
+
+                        </tr>
+
+
+
+                        <tr class="row col-12 ">
+                            <td class="col-9">
+                                <b>Total</b>:
+                            </td>
+                            <td class="col-3">
+                                <b>@Html.DisplayFor(i => Model.CurrentReceipt.Total)$</b>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row col-12 receipt">
+
+                <button class="btn btn-success col-3" data-toggle="modal" data-target="#receiptModal">
+                    Print
+                </button>
+
+            </div>
+            <div class="modal fade" id="receiptModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-10">
+                                <h3>Cuddly Wombat</h3>
+                                <p>
+                                    <b>@Html.LabelFor(i => Model.CurrentReceipt.Name)</b>:
+                                    @Html.DisplayFor(i => Model.CurrentReceipt.Name)
+                                </p>
+                                <p>
+                                    <b>@Html.LabelFor(i => Model.CurrentReceipt.Description)</b>:
+                                    @Html.DisplayFor(i => Model.CurrentReceipt.Description)
+                                </p>
+                                <p>
+                                    <b>@Html.LabelFor(i => Model.CurrentReceipt.MerchantID)</b>:
+                                    @Html.DisplayFor(i => Model.CurrentReceipt.MerchantID)
+                                </p>
+                                <p>
+                                    <b>@Html.LabelFor(i => Model.CurrentReceipt.DateCreated)</b>:
+                                    @Html.DisplayFor(i => Model.CurrentReceipt.DateCreated)
+                                </p>
+                                <p>
+                                    <b>@Html.LabelFor(i => Model.CurrentReceipt.CardNumber)</b>:
+                                    @Html.DisplayFor(i => Model.CurrentReceipt.CardNumber)
+                                </p>
+                                <p>
+                                    <b>@Html.LabelFor(i => Model.CurrentReceipt.EmployeeName)</b>:
+                                    @Html.DisplayFor(i => Model.CurrentReceipt.EmployeeName)
+                                </p>
+                                <p>
+                                    <b>@Html.LabelFor(i => Model.CurrentReceipt.CustomerName)</b>:
+                                    @Html.DisplayFor(i => Model.CurrentReceipt.CustomerName)
+                                </p>
+                                <p>
+                                    <b>@Html.LabelFor(i => Model.CurrentReceipt.Total)</b>:
+                                    @Html.DisplayFor(i => Model.CurrentReceipt.Total)
+                                </p>
+                            </div>
+
+
+                            <table class="col-10">
+                                <thead>
+                                    <tr class="row col-12 table-primary">
+                                        <th class="col-4" scope="col">
+                                            Item Name
+                                        </th>
+                                        <th class="col-4" scope="col">
+                                            Description
+                                        </th>
+                                        <th class="col-4" scope="col">
+                                            Total
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="row col-12 ">
+                                        <td class="col-4" scope="col">
+                                            @foreach (string[] s in orderDetails)
+                                            {
+                                                @Html.DisplayFor(i => s[0])
+                                                <br />
+
+                                            }
+                                        </td>
+                                        <td class="col-4" scope="col">
+                                            @foreach (string[] s in orderDetails)
+                                            {
+                                                @Html.DisplayFor(i => s[1])
+                                                <br />
+
+                                            }
+                                        </td>
+                                        <td class="col-4" scope="col">
+                                            @foreach (string[] s in orderDetails)
+                                            {
+                                                @Html.DisplayFor(i => s[2])
+                                                <br />
+
+                                            }
+                                        </td>
+
+                                    </tr>
+
+
+
+                                    <tr class="row col-12 ">
+                                        <td class="col-9">
+                                            <b>Total</b>:
+                                        </td>
+                                        <td class="col-3">
+                                            <b>@Html.DisplayFor(i => Model.CurrentReceipt.Total)$</b>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        
+        
+    }
+        @if (Model.CurrentReceipt == null)
+        {
+            string Text = "Click on the 'Info' ro view receipt detaiul";
+            @Html.DisplayFor(i => Text)
+
+
+        }
+
+
+    </div>
+    </div>
+
+    <script>
+    function GetReceiptDetail(orderID) {
+        var url = '@Url.Action("Index","Receipts")';
+        url = url + "?orderID=" + orderID;
+        window.location.replace(url);
+
+    }
+
+    function HandleAction(orderID, action) {
+        var url = '@Url.Action("HandleAction", "Payments")';
+        var data =
+        {
+            OrderID: orderID,
+            Action: action
+        };
+
+        $.post(url, data, function (response) {
+            var nextUrl = "";
+            if (response == "Edit") {
+                nextUrl = '@Url.Action("Create", "Orders")';
+                nextUrl = nextUrl + "?orderID=" + orderID;
+                window.location.replace(nextUrl);
+            }
+            else if (response == "Deleted") {
+                nextUrl = '@Url.Action("Index","Payments")';
+                window.location.replace(nextUrl);
+            }
+            else if (response == "Paid") {
+                $("#paymenSuccessModal").modal();
+
+            }
+        });
+
+    }
+    function HandleSuccessfulPayment(action) {
+        if (action == "Close") {
+            var url = '@Url.Action("Index", "Payments")';
+            window.location.replace(url);
+
+        }
+
+    }
+
+
+    </script>
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

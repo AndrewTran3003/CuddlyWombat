@@ -10,6 +10,6 @@ namespace CuddlyWombat.ViewModel
     {
         public ICollection<Receipt> Receipts { get; set; }
         public Receipt CurrentReceipt { get; set; }
-        public Payment CurrentPayment { get; set; }
+        public string ActiveOrderID { get; set; }
     }
 }
