@@ -1,0 +1,143 @@
+﻿@model CuddlyWombat.ViewModel.KitchenViewModel
+@{
+    ViewData["Title"] = "Index";
+    int orderCounter = 0;
+}
+<style>
+    .orderFormat {
+        border: 1px solid;
+        border-radius: 5px;
+        margin: 15px;
+        padding: 5px;
+    }
+
+    .tableFormat {
+        margin: 30px;
+        width: 80%;
+    }
+</style>
+<h1>Kitchen</h1>
+
+<div class="col-10">
+    <div class="row media-object">
+        @foreach (Order order in Model.OrdersToBeFinished)
+        {
+            if (orderCounter != 0 && orderCounter % 4 == 0)
+            {
+            @:</div>
+            @:<div class="row media-object">
+            }
+            <div class="col-3 orderFormat">
+                <table class="col-12 tableFormat container">
+                    <tbody>
+                        <tr class="row">
+                            <td scope="col">
+                                <strong>Name:</strong>
+                            </td>
+                            <td scope="col">
+                                @Html.DisplayFor(i => order.Name)
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td scope="col">
+                                <strong>Customer Name:</strong>
+                            </td>
+                            <td scope="col">
+                                @Html.DisplayFor(i => order.CustomerName)
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td scope="col">
+                                <strong>Description:</strong>
+                            </td>
+                            <td scope="col">
+                                @Html.DisplayFor(i => order.Description)
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td scope="col">
+                                <strong>Start Date:</strong>
+                            </td>
+                            <td scope="col">
+                                @Html.DisplayFor(i => order.OrderStartTime)
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td scope="col">
+                                @foreach (OrderJItem orderItem in order.OrderItems)
+                                {
+
+                                    if (orderItem.ItemsSold > 0)
+                                    {
+                                        @Html.DisplayFor(i => orderItem.Item.Name)
+                                        <br />
+                                    }
+
+
+
+                                }
+                                @foreach (OrderJMenu orderMenu in order.OrderMenus)
+                                {
+                                    if (orderMenu.MenusSold > 0)
+                                    {
+                                        @Html.DisplayFor(i => orderMenu.Menu.Name)
+                                        <br />
+                                    }
+                                }
+                            </td>
+                            <td scope="col">
+                                @foreach (OrderJItem orderItem in order.OrderItems)
+                                {
+
+                                    if (orderItem.ItemsSold > 0)
+                                    {
+                                        @Html.DisplayFor(i => orderItem.ItemsSold)
+                                        <br />
+                                    }
+
+
+
+                                }
+                                @foreach (OrderJMenu orderMenu in order.OrderMenus)
+                                {
+                                    if (orderMenu.MenusSold > 0)
+                                    {
+                                        @Html.DisplayFor(i => orderMenu.MenusSold)
+                                        <br />
+                                    }
+                                }
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <div class="col-12 button-clicked">
+                    <button type="button" class="btn btn-primary btn-block option-button" onclick="FinishOrder('@order.ID.ToString()')">
+                        Finish
+                    </button>
+                </div>
+            </div>
+
+            orderCounter++;
+        }
+    </div>
+
+</div>
+<script>
+    function FinishOrder(orderID) {
+        var url = '@Url.Action("FinishOrder", "Kitchens")';
+        var data =
+        {
+            OrderID : orderID
+        }
+        $.post(url, data, function (response) {
+            if (response == "Ok") {
+                var newUrl = '@Url.Action("Index", "Kitchens")';
+                window.location.replace(newUrl);
+
+            }
+
+        });
+
+    }
+</script>

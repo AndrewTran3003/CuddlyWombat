@@ -8,6 +8,7 @@ using CuddlyWombat.Models;
 using CuddlyWombat.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,6 +22,8 @@ namespace CuddlyWombat.Controllers
         {
             _context = context;
         }
+        [Authorize(Roles = "FOH,AR")]
+
         public async Task<IActionResult> Index(string orderID = null)
         {
             PaymentViewModel paymentViewModel = new PaymentViewModel
@@ -63,6 +66,8 @@ namespace CuddlyWombat.Controllers
             return View(paymentViewModel);
         }
         [HttpPost]
+        [Authorize(Roles = "FOH,AR")]
+
         public async Task<ActionResult<string>> HandleAction(string orderID, string action)
         {
             string response = "default";
@@ -87,7 +92,7 @@ namespace CuddlyWombat.Controllers
                 paymentViewModel.ActiveOrder.Order.Status = "Complete";
                 paymentViewModel.ActiveOrder.Order.OrderStartTime = DateTime.UtcNow;
 
-                Payment payment = new Payment
+                Payment newPayment = new Payment
                 {
                     ID = Guid.NewGuid(),
                     Name = paymentViewModel.ActiveOrder.Order.Name,
@@ -102,14 +107,69 @@ namespace CuddlyWombat.Controllers
                 {
                     ID = Guid.NewGuid(),
                     OrderID = Guid.Parse(orderID),
-                    PaymentID = payment.ID,
+                    PaymentID = newPayment.ID,
                     Order = paymentViewModel.ActiveOrder.Order,
-                    Payment = payment
+                    Payment = newPayment
                 };
-                payment.PaymentOrder = paymentOrder;
+                newPayment.PaymentOrder = paymentOrder;
                 paymentViewModel.ActiveOrder.Order.PaymentOrder = paymentOrder;
+                var newReceipt = new Receipt
+                {
+                    ID = Guid.NewGuid(),
+                    Name = "Receipt for " + newPayment.CustomerName,
+                    Description = newPayment.Description,
+                    DateCreated = DateTime.UtcNow,
+                    CustomerName = newPayment.CustomerName,
+                    EmployeeName = newPayment.EmployeeName,
+                    CardNumber = "4916239779719037",
+                    MerchantID = "654asd-fdacd2-566ddc-5dv2z5",
+                    Total = newPayment.Amount
+                };
+                var orderItem = _context.OrderItems.Where(i => i.OrderID == paymentViewModel.ActiveOrder.Order.ID);
+                var orderMenu = _context.OrderMenus.Where(i => i.OrderID == paymentViewModel.ActiveOrder.Order.ID);
+                var items = await _context.Items.ToListAsync();
+                var menus = await _context.Menus.ToListAsync();
+                var itemToAdd = new List<Item>();
+                string orderDetail = "";
 
-                _context.Payment.Add(payment);
+                foreach (OrderJItem oj in orderItem)
+                {
+                    foreach (Item item in items)
+                    {
+                        if (item.ID == oj.ItemID)
+                        {
+                            var amountDue = oj.ItemsSold * item.Price;
+                            orderDetail = orderDetail + item.Name + ":" + oj.ItemsSold + ":" + amountDue + ",";
+                        }
+                    }
+                }
+                foreach (OrderJMenu om in orderMenu)
+                {
+                    foreach (Menu menu in menus)
+                    {
+                        if (menu.ID == om.MenuID)
+                        {
+                            var amountDue = om.MenusSold * menu.Price;
+                            orderDetail = orderDetail + menu.Name + ":" + om.MenusSold + ":" + amountDue + ",";
+                        }
+                    }
+                }
+
+                var newPaymentReceipt = new PaymentJReceipt
+                {
+                    ID = Guid.NewGuid(),
+                    PaymentID = newPayment.ID,
+                    ReceiptID = newReceipt.ID,
+                    Payment = newPayment,
+                    Receipt = newReceipt
+
+                };
+
+                newReceipt.OrderDetail = orderDetail;
+                newReceipt.PaymentReceipt = newPaymentReceipt;
+                _context.Receipts.Add(newReceipt);
+                _context.PaymentReceipt.Add(newPaymentReceipt);
+                _context.Payment.Add(newPayment);
                 _context.PaymentOrder.Add(paymentOrder);
                 _context.Orders.Update(paymentViewModel.ActiveOrder.Order);
                 await _context.SaveChangesAsync();

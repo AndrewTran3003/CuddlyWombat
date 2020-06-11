@@ -23,12 +23,14 @@ namespace CuddlyWombat.Controllers
         }
 
         // GET: Orders
+        [Authorize(Roles = "FOH,AR")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Orders.ToListAsync());
         }
 
         // GET: Orders/Details/5
+        [Authorize(Roles = "FOH,AR")]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -45,6 +47,7 @@ namespace CuddlyWombat.Controllers
 
             return View(order);
         }
+        [Authorize(Roles = "FOH,AR")]
 
         public async Task<IActionResult> Create(string orderID = null, string Name = null, string Description = null, string CustomerName = null)
         {
@@ -58,7 +61,8 @@ namespace CuddlyWombat.Controllers
                     IsPaid = false,
                     DateCreated = DateTime.UtcNow,
                     Employee = User.Identity.Name,
-                    AmountDue = 0
+                    AmountDue = 0,
+                    OrderStartTime = DateTime.UtcNow
                 };
 
                 _context.Orders.Add(order);
@@ -67,7 +71,7 @@ namespace CuddlyWombat.Controllers
             }
 
             var orderViewModel = new OrderViewModel();
-            orderViewModel.Items = await _context.Items.ToListAsync();
+            orderViewModel.Items = await _context.Items.Where(i => i.Type != "GOA").ToListAsync();
             orderViewModel.Menus = await _context.Menus
                 .Include(i => i.ItemMenus)
                 .ToListAsync();
@@ -91,6 +95,7 @@ namespace CuddlyWombat.Controllers
             return View("Create", orderViewModel);
         }
         [HttpPost]
+        [Authorize(Roles = "FOH,AR")]
         public async Task<ActionResult<OrderViewModel>> SubtractOneFromAvailableList(string OrderID, string ID, string Type, string CustomerName,string Description, string Name)
         {
 
@@ -135,6 +140,8 @@ namespace CuddlyWombat.Controllers
 
         }
         [HttpPost]
+        [Authorize(Roles = "FOH,AR")]
+
         public async Task<ActionResult<OrderViewModel>> AddOneBackToAvailableList(string OrderID, string ID, string Type, string CustomerName, string Description, string Name)
         {
             var orderViewModel = new OrderViewModel
@@ -167,6 +174,8 @@ namespace CuddlyWombat.Controllers
 
         }
         [HttpPost]
+        [Authorize(Roles = "FOH,AR")]
+
         public async Task<ActionResult<string>> CompleteOrder(string OrderID ,string Status, string Name, string CustomerName, string OrderType, string Description )
         {
             var Order = _context.Orders.Where(i => i.ID.ToString() == OrderID).FirstOrDefault();
@@ -340,6 +349,8 @@ namespace CuddlyWombat.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "FOH,AR")]
+
         public async Task<IActionResult> Create([Bind("AmountDue,Status,Employee,CustomerName,ID,Name,Description,DateCreated")] Order order)
         {
             if (ModelState.IsValid)
@@ -353,6 +364,8 @@ namespace CuddlyWombat.Controllers
         }
 
         // GET: Orders/Edit/5
+        [Authorize(Roles = "FOH,AR")]
+
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -373,6 +386,8 @@ namespace CuddlyWombat.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "FOH,AR")]
+
         public async Task<IActionResult> Edit(Guid id, [Bind("AmountDue,Status,Employee,CustomerName,ID,Name,Description,DateCreated")] Order order)
         {
             if (id != order.ID)
@@ -404,6 +419,8 @@ namespace CuddlyWombat.Controllers
         }
 
         // GET: Orders/Delete/5
+        [Authorize(Roles = "FOH,AR")]
+
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -424,6 +441,8 @@ namespace CuddlyWombat.Controllers
         // POST: Orders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "FOH,AR")]
+
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var order = await _context.Orders.FindAsync(id);

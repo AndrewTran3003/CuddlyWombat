@@ -2,7 +2,6 @@ C:\Side Projects\CuddlyWombat\CuddlyWombat\bin\Debug\netcoreapp3.1\appsettings.D
 C:\Side Projects\CuddlyWombat\CuddlyWombat\bin\Debug\netcoreapp3.1\appsettings.json
 C:\Side Projects\CuddlyWombat\CuddlyWombat\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
 C:\Side Projects\CuddlyWombat\CuddlyWombat\bin\Debug\netcoreapp3.1\CuddlyWombat.exe
-C:\Side Projects\CuddlyWombat\CuddlyWombat\obj\Debug\netcoreapp3.1\CuddlyWombat.csprojAssemblyReference.cache
 C:\Side Projects\CuddlyWombat\CuddlyWombat\obj\Debug\netcoreapp3.1\CuddlyWombat.RazorAssemblyInfo.cache
 C:\Side Projects\CuddlyWombat\CuddlyWombat\obj\Debug\netcoreapp3.1\CuddlyWombat.RazorAssemblyInfo.cs
 C:\Side Projects\CuddlyWombat\CuddlyWombat\obj\Debug\netcoreapp3.1\CuddlyWombat.AssemblyInfoInputs.cache
@@ -188,3 +187,7 @@ C:\Side Projects\CuddlyWombat\CuddlyWombat\obj\Debug\netcoreapp3.1\CuddlyWombat.
 C:\Side Projects\CuddlyWombat\CuddlyWombat\obj\Debug\netcoreapp3.1\CuddlyWombat.MvcApplicationPartsAssemblyInfo.cache
 C:\Side Projects\CuddlyWombat\CuddlyWombat\obj\Debug\netcoreapp3.1\Razor\Views\Payments\Index.cshtml.g.cs
 C:\Side Projects\CuddlyWombat\CuddlyWombat\obj\Debug\netcoreapp3.1\Razor\Views\Receipts\Index.cshtml.g.cs
+C:\Side Projects\CuddlyWombat\CuddlyWombat\obj\Debug\netcoreapp3.1\Razor\Views\GOAs\Index.cshtml.g.cs
+C:\Side Projects\CuddlyWombat\CuddlyWombat\obj\Debug\netcoreapp3.1\CuddlyWombat.csprojAssemblyReference.cache
+C:\Side Projects\CuddlyWombat\CuddlyWombat\obj\Debug\netcoreapp3.1\Razor\Views\Kitchens\Index.cshtml.g.cs
+C:\Side Projects\CuddlyWombat\CuddlyWombat\obj\Debug\netcoreapp3.1\Razor\Views\Statistics\Index.cshtml.g.cs

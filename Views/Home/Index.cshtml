@@ -1,4 +1,6 @@
-﻿@{
+﻿@model CuddlyWombat.ViewModel.HomeViewModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -8,10 +10,85 @@
 
     <div class="text-center">
         <h1 class="display-4">Welcome</h1>
-        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+        <h1>Helllo @User.Identity.Name</h1>
+
     </div>
 
-    <h1>Helllo @User.Identity.Name</h1>
+
+    @if (User.IsInRole("FOH") || User.IsInRole("BOH") || User.IsInRole("AR"))
+    {
+        <div class="modal fade" id="GOAOne" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Alert</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Someone is waiting longer than he should be</p>
+                    </div>
+                    <div class="modal-footer">
+
+
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="GOAMany" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Alert</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p> More than two people are waiting longer than they should be</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+    var IsGOAOneShown = false;
+    var IsGOAManyShown = false;
+
+    function AnyOverdueOrder() {
+        var url = '@Url.Action("AnyOverdueOrder", "GOAs")';
+        $.get(url, function (response) {
+            if (response == "OneOverdue") {
+                if (IsGOAOneShown == false) {
+                    $("#GOAOne").modal();
+                    IsGOAOneShown = true;
+                }
+            }
+            else if (response == "MultipleOverdue") {
+                if (IsGOAManyShown == false) {
+                    $("#GOAMany").modal();
+                    IsGOAManyShown = true;
+                }
+
+            }
+        });
+
+    }
+    $(document).ready(function () {
+        // Handler for .ready() called.
+        setInterval(AnyOverdueOrder, 5000);
+    });
+
+        </script>
+
+
+    }
+
     if (@User.IsInRole("Admin"))
     {
         <h1>This Man is an Admin</h1>
@@ -32,5 +109,90 @@
     {
         <h1>This Man is an Accountant</h1>
     }
+
+}
+else
+{
+    <h1> Welcome to Cuddly Wombat</h1>
+    <h2>Today's menu</h2>
+    <table class="table">
+        <thead>
+            <tr>
+
+
+
+                <th>
+                    Name
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Price
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <h2>Special Set!</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Item List
+                </th>
+                <th>
+                    Price
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var menu in Model.Menus)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => menu.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => menu.Description)
+                    </td>
+                    <td>
+                        @foreach (var i in menu.ItemMenus)
+                        {
+                            @Html.DisplayFor(modelItem => i.Item.Name)<br />
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => menu.Price)
+
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
 
 }

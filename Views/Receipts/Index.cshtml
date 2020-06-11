@@ -48,31 +48,7 @@
                 @{
                     foreach (Receipt receipt in Model.Receipts)
                     {
-                        if (receipt.PaymentReceipt.Payment.PaymentOrder.OrderID.ToString() == Model.ActiveOrderID)
-                        {
-                            <tr class="row col-12 table-active">
-                                <td class="col-1">
-                                    @receiptNumber
-                                </td>
-                                <td class="col-4">
-                                    @Html.DisplayFor(i => receipt.Name)
-                                </td>
-                                <td class="col-3">
-                                    @Html.DisplayFor(i => receipt.CustomerName)
-                                </td>
-                                <td class="col-2">
-                                    @Html.DisplayFor(i => receipt.Total)
-                                </td>
 
-                                <th class="col-2">
-                                    <button type="button" class="btn btn-info" onclick="GetReceiptDetail('@receipt.PaymentReceipt.Payment.PaymentOrder.OrderID')">Info</button>
-                                </th>
-                            </tr>
-
-
-                        }
-                        else
-                        {
                             <tr class="row col-12">
                                 <td class="col-1">
                                     @receiptNumber
@@ -96,9 +72,6 @@
 
 
                         receiptNumber++;
-                    }
-
-
                 }
 
 

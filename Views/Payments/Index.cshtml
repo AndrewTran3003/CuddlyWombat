@@ -301,6 +301,7 @@
                 </div>
             </div>
 
+
         }
         else
         {
@@ -309,7 +310,45 @@
 
 
         }
-
+        <div class="modal fade" id="GOAOne" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Alert</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Someone is waiting longer than he should be</p>
+                    </div>
+                    <div class="modal-footer">
+                        
+                        <button type="button" class="btn btn-warning" onclick ="RedirectToGOA()">Go to GOA</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="GOAMany" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Alert</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p> More than two people are waiting longer than they should be</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-warning"onclick ="RedirectToGOA()">Go to GOA</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
 </div>
@@ -355,13 +394,44 @@
         }
         else if (action == "Print Receipt") {
             var url = '@Url.Action("Index", "Receipts")';
-            url = url + "?orderID=" + orderID; 
+            url = url + "?orderID=" + orderID;
             window.location.replace(url);
 
         }
 
 
     }
+    var IsGOAOneShown = false;
+    var IsGOAManyShown = false;
+
+    function AnyOverdueOrder() {
+        var url = '@Url.Action("AnyOverdueOrder", "GOAs")';
+        $.get(url, function (response) {
+            if (response == "OneOverdue") {
+                if (IsGOAOneShown == false) {
+                    $("#GOAOne").modal();
+                    IsGOAOneShown = true;
+                }
+            }
+            else if (response == "MultipleOverdue") {
+                if (IsGOAManyShown == false) {
+                    $("#GOAMany").modal();
+                    IsGOAManyShown = true;
+                }
+
+            }
+        });
+
+    }
+    function RedirectToGOA() {
+        var url = '@Url.Action("Index","GOAs")';
+        window.location.replace(url);
+
+    }
+    $(document).ready(function () {
+        // Handler for .ready() called.
+        setInterval(AnyOverdueOrder, 5000);
+    });
 
 
 </script>

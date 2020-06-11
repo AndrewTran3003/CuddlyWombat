@@ -22,7 +22,7 @@ namespace CuddlyWombat.Controllers
         public IActionResult Index()
         {
             _signInManager.SignOutAsync();
-            return Redirect("../Login");
+            return Redirect("../Home");
         }
     }
 }

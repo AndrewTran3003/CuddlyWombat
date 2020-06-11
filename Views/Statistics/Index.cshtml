@@ -1,0 +1,356 @@
+﻿@model CuddlyWombat.ViewModel.StatisticViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    int itemCounting = 1;
+    int menuCounting = 1;
+}
+
+<h1>Statisic</h1>
+
+<div>
+    <h2>Items' Statistic</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    No.
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Price<br />per item
+                </th>
+                <th>
+                    Sold<br /> Qty
+                </th>
+                <th>
+                    Remaining<br /> Qty
+                </th>
+                <th>
+                    Generated<br />Revenue
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+
+                var itemSold = 0;
+
+                <tr>
+                    <td>
+                        @itemCounting
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @foreach (OrderJItem orderItem in item.OrderItems)
+                        {
+
+                            if (Nullable.Equals(orderItem.Order, null) == false)
+                            {
+                                if (orderItem.Order.IsPaid == true)
+                                {
+                                    itemSold = itemSold + orderItem.ItemsSold;
+                                }
+                            }
+
+                        }
+                        @Html.DisplayFor(modelItem => itemSold)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td>
+                        @{
+                            var total = itemSold * item.Price;
+                        }
+                        @Html.DisplayFor(modelItem => total)
+                    </td>
+
+                </tr>
+                                itemCounting++;
+                            }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <h2>Menus' Statistic</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    No.
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Price<br />per item
+                </th>
+                <th>
+                    Sold<br /> Qty
+                </th>
+                <th>
+                    Remaining<br /> Qty
+                </th>
+                <th>
+                    Generated<br />Revenue
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var menu in Model.Menus)
+            {
+
+                var menuSold = 0;
+
+                <tr>
+                    <td>
+                        @menuCounting
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => menu.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => menu.Price)
+                    </td>
+                    <td>
+                        @foreach (OrderJMenu orderMenu in menu.OrderMenus)
+                        {
+
+                            if (Nullable.Equals(orderMenu.Order, null) == false)
+                            {
+                                if (orderMenu.Order.IsPaid == true)
+                                {
+                                    menuSold = menuSold + orderMenu.MenusSold;
+                                }
+                            }
+
+                        }
+                        @Html.DisplayFor(modelItem => menuSold)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => menu.Quantity)
+                    </td>
+                    <td>
+                        @{
+                            var total = menuSold * menu.Price;
+                        }
+                        @Html.DisplayFor(modelItem => total)
+                    </td>
+
+                </tr>
+                                menuCounting++;
+                            }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <h2>Paid Orders</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Order's Name
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Has
+                </th>
+                <th>
+                    Qty
+                </th>
+                <th>
+                    Price
+                </th>
+                <th>
+                    Total Amount
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Order order in Model.Orders)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(i => order.Name)
+                    </td>
+                    <td>
+
+                        @Html.DisplayFor(i => order.Description)
+                    </td>
+                    <td>
+                        @foreach (OrderJItem orderItem in order.OrderItems)
+                        {
+
+
+                            if (orderItem.ItemsSold > 0)
+                            {
+                                @Html.DisplayFor(i => orderItem.Item.Name)
+                                <br />
+                            }
+
+
+
+                        }
+                        @foreach (OrderJMenu orderMenu in order.OrderMenus)
+                        {
+
+                            if (orderMenu.MenusSold > 0)
+                            {
+                                @Html.DisplayFor(i => orderMenu.Menu.Name)
+                                <br />
+                            }
+
+
+
+                        }
+                    </td>
+
+
+                    <td>
+                        @foreach (OrderJItem orderItem in order.OrderItems)
+                        {
+
+
+                            if (orderItem.ItemsSold > 0)
+                            {
+                                @Html.DisplayFor(i => orderItem.ItemsSold)
+                                <br />
+                            }
+
+
+
+                        }
+                        @foreach (OrderJMenu orderMenu in order.OrderMenus)
+                        {
+
+                            if (orderMenu.MenusSold > 0)
+                            {
+                                @Html.DisplayFor(i => orderMenu.MenusSold)
+                                <br />
+                            }
+
+
+
+                        }
+
+                    </td>
+                    <td>
+                        @foreach (OrderJItem orderItem in order.OrderItems)
+                        {
+
+
+                            if (orderItem.ItemsSold > 0)
+                            {
+                                var totalByItem = orderItem.ItemsSold * orderItem.Item.Price;
+                                @Html.DisplayFor(i => totalByItem)
+                                <br />
+                            }
+
+
+
+                        }
+                        @foreach (OrderJMenu orderMenu in order.OrderMenus)
+                        {
+
+                            if (orderMenu.MenusSold > 0)
+                            {
+                                var totalByMenu = orderMenu.MenusSold * orderMenu.Menu.Price;
+                                @Html.DisplayFor(i => totalByMenu);
+                                <br />
+                            }
+                        }
+
+                    </td>
+                    <td>
+                        @Html.DisplayFor(i => order.AmountDue)
+                    </td>
+
+                </tr>
+
+
+            }
+
+
+        </tbody>
+    </table>
+    <div>
+        @{
+            var salesByEmployee =
+                from order in Model.Orders
+                group order by order.Employee into Employee
+                select Employee;
+
+        }
+        <h2>Sales by employee</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Employee's Name
+                    </th>
+                    <th>
+                        Number of sales
+                    </th>
+                    <th>
+                        Generated Revenue
+                    </th>
+                    
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sale in salesByEmployee)
+                {
+
+
+
+                    <tr>
+                        <td>
+                           @Html.DisplayFor(i => sale.Key)
+                        </td>
+                        <td>
+                            @{
+                                int count = 0;
+                                foreach (var saleRecord in sale)
+                                {
+                                    count = count + 1;
+                                }
+                            }
+                            @Html.DisplayFor(modelItem => count)
+                        </td>
+                        <td>
+                            @{
+                                double totalRevenue = 0;
+                                foreach (var saleRecord in sale) {
+                                    totalRevenue = totalRevenue + saleRecord.AmountDue;
+                                }
+                            }
+                            @Html.DisplayFor(modelItem => totalRevenue)
+                        </td>
+                        
+                           
+
+                    </tr>
+                    menuCounting++;
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>

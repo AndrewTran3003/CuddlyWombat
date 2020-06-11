@@ -7,6 +7,7 @@ using CuddlyWombat.Models;
 using CuddlyWombat.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,6 +21,8 @@ namespace CuddlyWombat.Controllers
             _context = context;
         }
         // GET: /<controller>/
+        [Authorize(Roles = "FOH,AR")]
+
         public async Task<IActionResult> Index(string orderID = null)
         {
             ReceiptViewModel receiptViewModel = new ReceiptViewModel();

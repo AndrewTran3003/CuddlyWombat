@@ -4,13 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CuddlyWombat</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <!--<link rel="stylesheet" href="~/css/site.css" /> -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 </head>
 
 <body>
-    @if (User.Identity.IsAuthenticated)
-    {
+    
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
                 <div class="container">
@@ -24,44 +28,71 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
-                            @if (User.IsInRole("Admin"))
+                            @if (User.Identity.IsAuthenticated)
                             {
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Items" asp-action="Index">Item List</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Menus" asp-action="Index">Menu List</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="Index">Register a new account</a>
+                                    </li>
+
+                                }
+                                @if (User.IsInRole("FOH") || User.IsInRole("AR"))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Create">Take order</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Payments" asp-action="Index">Payment</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Receipts" asp-action="Index">Receipts</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="GOAs" asp-action="Index">Gesture Of Apology</a>
+                                    </li>
+                                }
+
+                                @if (User.IsInRole("BOH") || User.IsInRole("AR"))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Kitchens" asp-action="Index">Kitchen</a>
+                                    </li>
+
+                                }
+                                @if (User.IsInRole("Acc"))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Statistics" asp-action="Index">Statistic</a>
+                                    </li>
+
+                                }
+
+
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Items" asp-action="Index">Change Item List</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Menus" asp-action="Index">Change Menu List</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Registration" asp-action="Index">Register a new account</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Logout" asp-action="Index">Log out</a>
                                 </li>
 
                             }
-                            @if (User.IsInRole("FOH") || User.IsInRole("AR"))
+                            @if (!User.Identity.IsAuthenticated)
                             {
+
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Create">Take order</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Payments" asp-action="Index">Payment</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Receipts" asp-action="Index">Receipts</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Log in</a>
                                 </li>
                             }
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Logout" asp-action="Index">Log out</a>
-                            </li>
-
-
-
                         </ul>
                     </div>
                 </div>
             </nav>
         </header>
-    }
+    
     <div>
         <main>
             <div class="container">
@@ -70,17 +101,15 @@
 
         </main>
     </div>
-    @if (User.Identity.IsAuthenticated)
-    {
+
+    
         <footer class="border-top footer text-muted">
             <div class="container">
                 &copy; 2020 - CuddlyWombat - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
             </div>
         </footer>
-    }
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+
     @RenderSection("Scripts", required: false)
 </body>
 </html>

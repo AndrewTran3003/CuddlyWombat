@@ -1,0 +1,249 @@
+﻿@model CuddlyWombat.ViewModel.GOAViewModel
+
+@{
+    ViewData["Title"] = "Gesture of Apology";
+    int paymentNumber = 1;
+    int GOAItemCounter = 0;
+}
+
+    <h1>Gesture of Apology</h1>
+
+<hr />
+<div class="row">
+
+    <div class="col-5">
+        <h2>Orders</h2>
+        <table class="col-12">
+            <thead>
+                <tr class="row col-12 table-active">
+                    <th scope="col" class="col-1">
+                        No
+                    </th>
+                    <th scope="col" class="col-3">
+                        Order's Name
+                    </th>
+                    <th scope="col" class="col-3">
+                        Order For
+                    </th>
+                    <th scope="col" class="col-3">
+                        Start Time
+                    </th>
+
+                    <th class="col-2">
+
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (Order order in Model.LateOrders)
+                    {
+
+
+
+                        <tr class="row col-12">
+                            <td class="col-1">
+                                @paymentNumber
+                            </td>
+                            <td class="col-3">
+                                @Html.DisplayFor(i => order.Name)
+                            </td>
+                            <td class="col-3">
+                                @Html.DisplayFor(i => order.CustomerName)
+                            </td>
+                            <td class="col-3">
+                                @Html.DisplayFor(i => order.OrderStartTime)
+                            </td>
+
+                            <th class="col-2">
+                                <button type="button" class="btn btn-info" onclick="GetOrderDetail('@order.ID.ToString()')">Info</button>
+                            </th>
+                        </tr>
+
+                        paymentNumber++;
+                    }
+
+
+                }
+
+
+            </tbody>
+        </table>
+    </div>
+    <div class="col-7">
+        <h2>Details</h2>
+        @if (Model.ActiveLateOrder != null)
+        {
+            <table class="col-12">
+                <thead>
+                    <tr class="row col-12 table-primary">
+                        <th class="col-3" scope="col">
+                            Order's Name
+                        </th>
+                        <th class="col-3" scope="col">
+                            Description
+                        </th>
+                        <th class="col-4" scope="col">
+                            Has
+                        </th>
+                        <th class="col-1" scope="col">
+                            Qty
+                        </th>
+                        <th class="col-1" scope="col">
+                            Price
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="row col-12 ">
+                        <td class="col-3" scope="col">
+                            @Html.DisplayFor(i => i.ActiveLateOrder.Name)
+                        </td>
+                        <td class="col-3" scope="col">
+
+                            @Html.DisplayFor(i => i.ActiveLateOrder.Description)
+                        </td>
+                        <td class="col-4" scope="col">
+                            @foreach (OrderJItem orderItem in Model.ActiveLateOrder.OrderItems)
+                            {
+                                if (orderItem.ItemsSold > 0)
+                                {
+                                    @Html.DisplayFor(i => orderItem.Item.Name)
+                                    <br />
+                                }
+                            }
+                            @foreach (OrderJMenu orderMenu in Model.ActiveLateOrder.OrderMenus)
+                            {
+                                if (orderMenu.MenusSold > 0)
+                                {
+                                    @Html.DisplayFor(i => orderMenu.Menu.Name)
+                                    <br />
+                                }
+                            }
+                        </td>
+
+
+                        <td class="col-1" scope="col">
+                            @foreach (OrderJItem orderItem in Model.ActiveLateOrder.OrderItems)
+                            {
+                                if (orderItem.ItemsSold > 0)
+                                {
+                                    @Html.DisplayFor(i => orderItem.ItemsSold)
+                                    <br />
+                                }
+                            }
+                            @foreach (OrderJMenu orderMenu in Model.ActiveLateOrder.OrderMenus)
+                            {
+                                if (orderMenu.MenusSold > 0)
+                                {
+                                    @Html.DisplayFor(i => orderMenu.MenusSold)
+                                    <br />
+                                }
+                            }
+                        </td>
+                        <td class="col-1" scope="col">
+                            @foreach (OrderJItem orderItem in Model.ActiveLateOrder.OrderItems)
+                            {
+                                if (orderItem.ItemsSold > 0)
+                                {
+                                    var totalByItem = orderItem.ItemsSold * orderItem.Item.Price;
+                                    @Html.DisplayFor(i => totalByItem)
+                                    <br />
+                                }
+                            }
+                            @foreach (OrderJMenu orderMenu in Model.ActiveLateOrder.OrderMenus)
+                            {
+                                if (orderMenu.MenusSold > 0)
+                                {
+                                    var totalByMenu = orderMenu.MenusSold * orderMenu.Menu.Price;
+                                    @Html.DisplayFor(i => totalByMenu)
+                                    <br />
+                                }
+                            }
+
+
+
+                        </td>
+
+                    </tr>
+                    <tr class="row col-12 ">
+                        <td class="col-11">
+                            Total Amount
+                        </td>
+                        <td class="col-1">
+                            @Html.DisplayFor(i => Model.ActiveLateOrder.AmountDue)
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <div class="col-12">
+                <h2>Available Items to Offer</h2>
+                <div class="row media-object col-12">
+
+                    @foreach (var item in Model.GOAItems)
+                    {
+                        if (GOAItemCounter != 0 && GOAItemCounter % 4 == 0)
+                        {
+                        @:</div>
+                        @:<div class="row media-object">
+                        }
+                        <div class="col-md-3 button-clicked">
+                            <button type="button" class="btn btn-warning btn-block option-button" onclick="HandleAction('@Model.ActiveLateOrder.ID.ToString()', '@item.ID.ToString()')">
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </button>
+                        </div>
+                        GOAItemCounter++;
+                    }
+                </div>
+
+            </div>
+            
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+</div>
+<script>
+    function GetOrderDetail(orderID) {
+        var url = '@Url.Action("Index","GOAs")';
+        url = url + "?orderID=" + orderID;
+        window.location.replace(url);
+
+    }
+
+    function HandleAction(orderID,itemID) {
+        var url = '@Url.Action("HandleAction", "GOAs")';
+        var data =
+        {
+            OrderID: orderID,
+            ItemID: itemID
+        };
+
+        $.post(url, data, function (response) {
+            if (response == "Success") {
+                var newUrl = '@Url.Action("Index", "GOAs")';
+                window.location.replace(newUrl);
+            }
+
+        });
+
+    }
+
+
+</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
